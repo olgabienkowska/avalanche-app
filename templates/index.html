@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="ISO-8859-1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avalanche Analysis (running on dummy data!)</title>
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0; /* Light gray background */
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            text-align: center;
+            padding: 20px 0;
+            background-color: #1e88e5;
+            color: white;
+            border-radius: 8px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2em;
+        }
+
+        footer {
+            text-align: center;
+            padding: 15px;
+            margin-top: 20px;
+            background-color: #1e88e5;
+            color: white;
+            font-size: 0.9em;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            background: #ffffff;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        h2 {
+            color: #1e88e5;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            font-size: 1.1em;
+            margin-bottom: 10px;
+            color: #1e88e5; /* Blue color for the label */
+            font-weight: bold; /* Make the label bold */
+            display: block; /* Ensure it appears above the select on mobile */
+        }
+
+        form {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 10px; /* Add spacing between form elements */
+            flex-wrap: wrap; /* Allow elements to wrap to the next line */
+        }
+
+        /* Updated Select Dropdown Styling */
+        select {
+            font-size: 1em;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #1e88e5; /* Blue border */
+            color: #333; /* Default text color */
+            background-color: #f8f9fa; /* Light background for dropdown */
+            cursor: pointer;
+            min-width: 150px; /* Minimum width for dropdown */
+            max-width: 300px; /* Maximum width for dropdown */
+            width: auto; /* Adjust width based on content */
+            white-space: nowrap; /* Prevent text from wrapping */
+        }
+
+        button {
+            background-color: #1e88e5;
+            color: white;
+            font-weight: bold;
+            padding: 10px 15px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            flex: none; /* Prevent button from stretching */
+        }
+
+        button:hover {
+            background-color: #1565c0; /* Darker blue on hover */
+        }
+
+        /* Grid Layout */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* 2 columns for larger screens */
+            grid-template-rows: auto auto; /* Adjust rows automatically */
+            gap: 20px; /* Spacing between boxes */
+            margin-top: 25px;
+        }
+
+        .section-box {
+            font-size: 1.1em;
+            line-height: 1.8;
+            background-color: #e0f4ff; /* Light blue section boxes */
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #cfe9ff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for a polished look */
+            text-align: justify;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease-in-out; /* Smooth transition for hover effects */
+        }
+
+        .section-box:hover {
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px); /* Slight lift on hover */
+        }
+
+        .section-title {
+            font-weight: bold;
+            font-size: 1.3em;
+            color: #1e88e5;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+
+        .insights-box h4 {
+            margin-bottom: 5px;
+            border-bottom: 1px solid #ddd; /* Add separator below each insight title */
+            padding-bottom: 5px;
+        }
+
+        /* Responsive Styling for Phones */
+        @media (max-width: 768px) {
+            .grid-container {
+                display: flex; /* Switch to flexbox layout */
+                flex-direction: column; /* Stack boxes vertically */
+                align-items: center; /* Center boxes horizontally */
+                gap: 20px; /* Add spacing between boxes */
+            }
+
+            .section-box {
+                margin: 0 auto; /* Center each box horizontally */
+                padding: 15px; /* Adjust padding for smaller screens */
+                width: 95%; /* Make the boxes occupy 95% of the screen width */
+                box-sizing: border-box; /* Ensure padding is included in width */
+            }
+
+            form {
+                flex-direction: column; /* Stack form elements vertically */
+                align-items: stretch; /* Make form elements span full width */
+                gap: 10px; /* Add spacing between elements */
+                width: 95%; /* Center the form on mobile */
+                margin: 0 auto; /* Center the form */
+            }
+
+            label {
+                text-align: left; /* Keep label aligned to the left */
+            }
+
+            select, button {
+                width: 100%; /* Full-width form elements */
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Avalanche Analysis Tool (dummy data as of today!)</h2>
+    <form method="POST" action="/analyze">
+        <label for="location">Choose Location:</label>
+        <select id="location" name="location" required>
+            {% for location in locations %}
+                <option value="{{ location }}" {% if location == selected_location %}selected{% endif %}>
+                    {{ location }}
+                </option>
+            {% endfor %}
+        </select>
+        <button type="submit">Submit</button>
+    </form>
+
+    {% if selected_location %}
+        <h2>Location Analysis for {{ selected_location }}</h2>
+
+        <!-- Responsive Grid Container -->
+        <div class="grid-container">
+            <!-- Summary Section -->
+            <div class="section-box summary-box">
+                <div class="section-title">Summary</div>
+                <p>{{ summary | bold_and_split }}</p>
+            </div>
+
+            <!-- Risk Analysis Section -->
+            <div class="section-box risk-box">
+                <div class="section-title">Risk Analysis</div>
+                <p>{{ risk_analysis | safe }}</p>
+            </div>
+
+            <!-- Accidents List Section -->
+            <div class="section-box accidents-box">
+                <div class="section-title">Accidents List</div>
+                {{ overview | bold_and_split }}
+            </div>
+
+            <!-- Insights Section -->
+            <div class="section-box insights-box">
+                <div class="section-title">Dataset Insights</div>
+                {% if insights %}
+                    {% for section, content in insights.items() %}
+                        <h4>{{ section }}</h4>
+                        <p>{{ content }}</p>
+                    {% endfor %}
+                {% else %}
+                    <p>No insights available.</p>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+
+</body>
+</html>
